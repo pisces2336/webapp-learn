@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  web:
+    build: ./web
+    container_name: web
+    environment:
+      -  CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./web:/web
+    ports:
+      - "3000:3000"
+      - "24678:24678"
+    working_dir: /web/webapp-learn
+    command: /bin/sh -c "npm install && npm run dev"
