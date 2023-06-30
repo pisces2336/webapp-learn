@@ -4,6 +4,8 @@ services:
   web:
     build: ./web
     container_name: web
+    environment:
+      -  CHOKIDAR_USEPOLLING=true
     volumes:
       - ./web:/web
     ports:
