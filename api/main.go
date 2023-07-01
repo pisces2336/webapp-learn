@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"main/model"
 	"os"
 	"time"
 
@@ -10,19 +11,33 @@ import (
 )
 
 func main() {
-	_, err := sqlConnect()
-	if err != nil {
-		panic(err.Error())
-	} else {
-		fmt.Println("db connection success!")
+	db := sqlConnect()
+
+	db.AutoMigrate(&model.Kanban{})
+
+	new_kanban := model.Kanban{
+		Title:    "タイトルテスト",
+		Body:     "本文テスト",
+		Category: 0,
 	}
+	model.CreateKanban(db, new_kanban)
+
+	firstKanban := model.GetFirstKanban(db)
+	fmt.Println(firstKanban)
+
+	firstKanban.Title = "編集されたタイトル"
+
+	model.UpdateKanban(db, &firstKanban)
+	updatedKanban := model.GetFirstKanban(db)
+	fmt.Println(updatedKanban)
 }
 
-func sqlConnect() (*gorm.DB, error) {
+func sqlConnect() *gorm.DB {
 	jst, err := time.LoadLocation("Asia/Tokyo")
 	if err != nil {
 		panic(err)
 	}
+
 	c := mysql.Config{
 		DBName:    "webapp_learn",
 		User:      "root",
@@ -34,7 +49,12 @@ func sqlConnect() (*gorm.DB, error) {
 		Loc:       jst,
 	}
 
-	fmt.Println(c.FormatDSN())
+	db, err := gorm.Open("mysql", c.FormatDSN())
+	if err != nil {
+		panic(err.Error())
+	} else {
+		fmt.Println("db connection success!")
+	}
 
-	return gorm.Open("mysql", c.FormatDSN())
+	return db
 }
