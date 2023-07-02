@@ -47,15 +47,15 @@
   const new_kanban = ref(new Kanban())
 
   const url = "http://api:8080/kanbans";
-  const res = await fetch(url);
-  const resData = await res.json();
+  const { data } = await useFetch(url);
+
   const kanban_list = ref([[],[],[]])
-  for (let i = 0; i < resData.length; i++) {
-    let k = new Kanban(resData[i]["title"], resData[i]["body"], resData[i]["category"]);
+  for (let i = 0; i < data.value.kanbans.length; i++) {
+    let k = new Kanban(data.value.kanbans[i]["title"],
+                       data.value.kanbans[i]["body"],
+                       data.value.kanbans[i]["category"]);
     kanban_list.value[k.category].push(k)
   }
-  console.log(kanban_list.value)
-  console.log(new Kanban())
 
   const createKanban = () => {
     const k = new_kanban.value

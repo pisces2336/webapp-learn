@@ -32,4 +32,4 @@ services:
     volumes:
       - ./api:/go/src
     working_dir: /go/src
-    tty: true
+    command: /bin/sh -c "go mod tidy && go run main.go"
