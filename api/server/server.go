@@ -7,7 +7,7 @@ import (
 func Start(port string) {
 	e := echo.New()
 
-	setRoutes(e)
+	e.GET("/kanbans", kanbanAll)
 
 	e.Logger.Fatal(e.Start(port))
 }
