@@ -6,10 +6,10 @@ import (
 )
 
 type Kanban struct {
-	ID       uint
-	Title    string
-	Body     string
-	Category int
+	ID       uint   `json:"id"`
+	Title    string `json:"title"`
+	Body     string `json:"body"`
+	Category int    `json:"category"`
 }
 
 func KanbanCreate(kanban *Kanban) {
