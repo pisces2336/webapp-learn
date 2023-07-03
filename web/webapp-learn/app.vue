@@ -11,10 +11,10 @@
     <hr>
 
     <div class="row mt-3 px-5 h-auto">
-      <div v-for="kanban_category in kanban_list" class="col-4">
-        <h2 v-if="kanban_list.indexOf(kanban_category) == 0">未着手: {{ kanban_category.length }}</h2>
-        <h2 v-else-if="kanban_list.indexOf(kanban_category) == 1">作業中: {{ kanban_category.length }}</h2>
-        <h2 v-else-if="kanban_list.indexOf(kanban_category) == 2">完了: {{ kanban_category.length }}</h2>
+      <div v-for="kanban_category in kanbans" class="col-4">
+        <h2 v-if="kanbans.indexOf(kanban_category) == 0">未着手: {{ kanban_category.length }}</h2>
+        <h2 v-else-if="kanbans.indexOf(kanban_category) == 1">作業中: {{ kanban_category.length }}</h2>
+        <h2 v-else-if="kanbans.indexOf(kanban_category) == 2">完了: {{ kanban_category.length }}</h2>
 
         <TransitionGroup name="list" tag="ul" class="position-relative list-unstyled">
           <li v-for="k in kanban_category" :key="k" class="card w-100 mx-auto mb-3">
@@ -37,42 +37,56 @@
 </template>
 <script setup>
   class Kanban {
-    constructor(title='', body='', category=0) {
-      this.title = title
-      this.body = body
-      this.category = category
-    }
+    title = '';
+    body = '';
+    category = 0;
   }
 
-  const new_kanban = ref(new Kanban())
-
-  const url = "http://api:8080/kanbans";
-  const { data } = await useFetch(url);
-
-  const kanban_list = ref([[],[],[]])
-  for (let i = 0; i < data.value.kanbans.length; i++) {
-    let k = new Kanban(data.value.kanbans[i]["title"],
-                       data.value.kanbans[i]["body"],
-                       data.value.kanbans[i]["category"]);
-    kanban_list.value[k.category].push(k)
-  }
+  const new_kanban = ref(new Kanban());
+  const kanbans = ref(getCategorizedKanbans());
 
   const createKanban = () => {
     const k = new_kanban.value
     if (k.title == '' || k.body =='') {
       return
     }
-    kanban_list.value[0].push(k)
+    kanbans.value[0].push(k)
     new_kanban.value = new Kanban()
+  }
+
+  const getAllKanbans = async () => {
+    const url = "http://api:8080/kanbans";
+    const { data } = await useFetch(url);
+    return data.value.kanbans;
+  }
+
+  const updateKanban = () => {
+    kanbans.value = getCategorizedKanbans();
+  }
+
+  const deleteKanban = async (k) => {
+    const url = "http://api:8080/kanbans/" + String(k.id);
+    await useFetch(url, { method: "delete" });
+    kanbans.value = getCategorizedKanbans();
+  }
+
+  const getCategorizedKanbans = () => {
+    const kanbans = getAllKanbans();
+    const result = [[], [], []];
+    for (let i = 0; i < kanbans.length; i++) {
+      let k = kanbans[i];
+      result[k.category].push(k);
+    }
+    return result;
   }
 
   const moveKanban = (k, direction) => {
     // kanban_list内の対応するオブジェクトを取得
-    const idx = kanban_list.value[k.category].indexOf(k)
-    const kanban = kanban_list.value[k.category][idx]
+    const idx = kanbans.value[k.category].indexOf(k)
+    const kanban = kanbans.value[k.category][idx]
 
     // 元居たカテゴリから削除
-    kanban_list.value[kanban.category].splice(idx, 1)
+    kanbans.value[kanban.category].splice(idx, 1)
 
     // カテゴリ移動
     if (direction == 'left') {
@@ -80,23 +94,6 @@
     } else {
       kanban.category++
     }
-    kanban_list.value[kanban.category].push(kanban)
+    kanbans.value[kanban.category].push(kanban)
   }
 </script>
-<style>
-  .list-move,
-  .list-enter-active,
-  .list-leave-active {
-    transition: all 0.5s ease;
-  }
-
-  .list-enter-from,
-  .list-leave-to {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  .list-leave-active {
-    position: absolute;
-  }
-</style>
