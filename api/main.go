@@ -7,5 +7,5 @@ import (
 
 func main() {
 	database.Init()
-	server.Start(":8080")
+	server.Start(":8000")
 }
