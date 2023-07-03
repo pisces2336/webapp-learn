@@ -2,8 +2,8 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-4">
-        <input v-model="new_kanban.title" placeholder="title" class="form-control">
-        <input v-model="new_kanban.body" placeholder="body" class="form-control">
+        <input v-model="newKanban.title" placeholder="title" class="form-control">
+        <input v-model="newKanban.body" placeholder="body" class="form-control">
         <button @click="createKanban()" class="btn btn-success">カンバン作成</button>
       </div>
     </div>
@@ -42,22 +42,40 @@
     category = 0;
   }
 
-  const new_kanban = ref(new Kanban());
-  const kanbans = ref(getCategorizedKanbans());
+  const url = "https://api:8080/kanbans"
 
-  const createKanban = () => {
-    const k = new_kanban.value
+  const newKanban = ref();
+  const kanbans = ref([[], [], []]);
+
+  const createKanban = async () => {
+    const k = newKanban.value
     if (k.title == '' || k.body =='') {
       return
     }
-    kanbans.value[0].push(k)
-    new_kanban.value = new Kanban()
+
+    const { data } = await useFetch(url, {
+      method: "POST",
+      body: newKanban.value
+    })
+    newKanban.value = new Kanban()
+
+    kanbans.value = await getCategorizedKanbans();
   }
 
   const getAllKanbans = async () => {
-    const url = "http://api:8080/kanbans";
     const { data } = await useFetch(url);
-    return data.value.kanbans;
+    console.log(data)
+    return data.value;
+  }
+
+  const getCategorizedKanbans = async () => {
+    const kanbans = await getAllKanbans();
+    const result = [[], [], []];
+    for (let i = 0; i < kanbans; i++) {
+      let k = kanbans[i];
+      result[k.category].push(k);
+    }
+    return result;
   }
 
   const updateKanban = () => {
@@ -65,22 +83,11 @@
   }
 
   const deleteKanban = async (k) => {
-    const url = "http://api:8080/kanbans/" + String(k.id);
-    await useFetch(url, { method: "delete" });
+    await useFetch(url + String(k.id), { method: "delete" });
     kanbans.value = getCategorizedKanbans();
   }
 
-  const getCategorizedKanbans = () => {
-    const kanbans = getAllKanbans();
-    const result = [[], [], []];
-    for (let i = 0; i < kanbans.length; i++) {
-      let k = kanbans[i];
-      result[k.category].push(k);
-    }
-    return result;
-  }
-
-  const moveKanban = (k, direction) => {
+  const moveKanban = async (k, direction) => {
     // kanban_list内の対応するオブジェクトを取得
     const idx = kanbans.value[k.category].indexOf(k)
     const kanban = kanbans.value[k.category][idx]
@@ -95,5 +102,10 @@
       kanban.category++
     }
     kanbans.value[kanban.category].push(kanban)
+
+    kanbans = await getCategorizedKanbans();
   }
+
+  newKanban.value = new Kanban();
+  kanbans.value = await getCategorizedKanbans();
 </script>
