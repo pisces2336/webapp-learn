@@ -12,11 +12,12 @@ import (
 func CreateKanban(c echo.Context) error {
 	db := database.DB
 	kanban := new(models.Kanban)
-	err := c.Bind(kanban)
+	err := c.Bind(&kanban)
 	if err != nil {
 		return err
 	}
 	db.Create(&kanban)
+	fmt.Println("created!")
 	return c.JSON(http.StatusOK, kanban)
 }
 

@@ -36,16 +36,10 @@
   </div>
 </template>
 <script setup>
-  class Kanban {
-    title = '';
-    body = '';
-    category = 0;
-  }
+  const url = "http://localhost:8080/kanbans"
 
-  const url = "https://api:8080/kanbans"
-
+  const kanbans = ref();
   const newKanban = ref();
-  const kanbans = ref([[], [], []]);
 
   const createKanban = async () => {
     const k = newKanban.value
@@ -55,16 +49,21 @@
 
     const { data } = await useFetch(url, {
       method: "POST",
-      body: newKanban.value
+      body: k
     })
-    newKanban.value = new Kanban()
+    console.log(data)
+    newKanban.value = {
+      id: 0,
+      title: '',
+      body: '',
+      category: 0
+    };
 
     kanbans.value = await getCategorizedKanbans();
   }
 
   const getAllKanbans = async () => {
     const { data } = await useFetch(url);
-    console.log(data)
     return data.value;
   }
 
@@ -75,6 +74,8 @@
       let k = kanbans[i];
       result[k.category].push(k);
     }
+
+    console.log(result)
     return result;
   }
 
@@ -106,6 +107,11 @@
     kanbans = await getCategorizedKanbans();
   }
 
-  newKanban.value = new Kanban();
+  newKanban.value = {
+    id: 0,
+    title: '',
+    body: '',
+    category: 0
+  };
   kanbans.value = await getCategorizedKanbans();
 </script>
