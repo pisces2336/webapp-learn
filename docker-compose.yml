@@ -38,5 +38,4 @@ services:
     working_dir: /go/src
     depends_on:
       - db
-    # command: /bin/sh -c "go mod tidy && go run main.go"
-    tty: true
+    command: /bin/sh -c "go mod tidy && go run main.go"

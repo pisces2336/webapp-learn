@@ -51,15 +51,14 @@
       method: "POST",
       body: k
     })
-    console.log(data)
+    kanbans.value[0].push(newKanban);
+
     newKanban.value = {
       id: 0,
       title: '',
       body: '',
       category: 0
     };
-
-    kanbans.value = await getCategorizedKanbans();
   }
 
   const getAllKanbans = async () => {
@@ -68,15 +67,19 @@
   }
 
   const getCategorizedKanbans = async () => {
-    const kanbans = await getAllKanbans();
-    const result = [[], [], []];
-    for (let i = 0; i < kanbans; i++) {
-      let k = kanbans[i];
-      result[k.category].push(k);
+    let kanbans = await getAllKanbans();
+    if (kanbans != null) {
+      const result = [[], [], []];
+      for (let i = 0; i < kanbans.length; i++) {
+        let k = kanbans[i];
+        result[k.category].push(k);
+      }
+      console.log(result)
+      return result;
+    } else {
+      console.log()
+      return null
     }
-
-    console.log(result)
-    return result;
   }
 
   const updateKanban = () => {
@@ -103,8 +106,6 @@
       kanban.category++
     }
     kanbans.value[kanban.category].push(kanban)
-
-    kanbans = await getCategorizedKanbans();
   }
 
   newKanban.value = {
@@ -113,5 +114,9 @@
     body: '',
     category: 0
   };
-  kanbans.value = await getCategorizedKanbans();
+
+  // 読み込みの最後に実行
+  setTimeout(async () => {
+    kanbans.value = await getCategorizedKanbans();
+  }, 100);
 </script>
