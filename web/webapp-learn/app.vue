@@ -52,7 +52,10 @@
       method: "POST",
       body: k
     })
-    kanbans.value[0].push(newKanban);
+    console.log(data.value)
+
+    kanbans.value[0].push(newKanban.value);
+    console.log(kanbans.value)
 
     newKanban.value = {
       id: 0,
