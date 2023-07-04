@@ -19,8 +19,10 @@
         <TransitionGroup name="list" tag="ul" class="position-relative list-unstyled">
           <li v-for="k in kanban_category" :key="k" class="card w-100 mx-auto mb-3">
             <div class="card-body">
-              <h5 class="card-title">{{ k.title }}</h5>
-              <button @click="deleteKanban(k)">D</button>
+              <div class="d-flex justify-content-between">
+                <h5 class="card-title text-break">{{ k.title }}</h5>
+                <button @click="deleteKanban(k)" class="text-nowrap btn btn-danger btn-sm ms-1" style="height: 2rem">削除</button>
+              </div>
               <p class="card-text">{{ k.body }}</p>
               <div class="d-flex justify-content-between">
                 <button v-if="k.category >= 1" @click="moveKanban(k, 'left')" class="btn btn-dark">◀</button>
