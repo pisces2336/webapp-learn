@@ -20,6 +20,7 @@
           <li v-for="k in kanban_category" :key="k" class="card w-100 mx-auto mb-3">
             <div class="card-body">
               <h5 class="card-title">{{ k.title }}</h5>
+              <button @click="deleteKanban(k)">D</button>
               <p class="card-text">{{ k.body }}</p>
               <div class="d-flex justify-content-between">
                 <button v-if="k.category >= 1" @click="moveKanban(k, 'left')" class="btn btn-dark">◀</button>
@@ -87,8 +88,9 @@
   }
 
   const deleteKanban = async (k) => {
-    await useFetch(url + String(k.id), { method: "delete" });
-    kanbans.value = getCategorizedKanbans();
+    await useFetch(url + "/" + String(k.id), { method: "delete" });
+    const idx = kanbans.value[k.category].indexOf(k);
+    kanbans.value[k.category].splice(idx, 1)
   }
 
   const moveKanban = async (k, direction) => {
