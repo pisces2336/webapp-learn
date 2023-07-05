@@ -19,7 +19,10 @@
         <TransitionGroup name="list" tag="ul" class="position-relative list-unstyled">
           <li v-for="k in kanban_category" :key="k" class="card w-100 mx-auto mb-3">
             <div class="card-body">
-              <h5 class="card-title">{{ k.title }}</h5>
+              <div class="d-flex justify-content-between">
+                <h5 class="card-title text-break">{{ k.title }}</h5>
+                <button @click="deleteKanban(k)" class="text-nowrap btn btn-danger btn-sm ms-1" style="height: 2rem">削除</button>
+              </div>
               <p class="card-text">{{ k.body }}</p>
               <div class="d-flex justify-content-between">
                 <button v-if="k.category >= 1" @click="moveKanban(k, 'left')" class="btn btn-dark">◀</button>
@@ -47,19 +50,22 @@
       return
     }
 
+    console.log(k)
+
     const { data } = await useFetch(url, {
       method: "POST",
       body: k
     })
-    console.log(data)
+
+    kanbans.value[0].push(newKanban.value);
+    console.log(kanbans.value)
+
     newKanban.value = {
       id: 0,
       title: '',
       body: '',
       category: 0
     };
-
-    kanbans.value = await getCategorizedKanbans();
   }
 
   const getAllKanbans = async () => {
@@ -68,24 +74,34 @@
   }
 
   const getCategorizedKanbans = async () => {
-    const kanbans = await getAllKanbans();
-    const result = [[], [], []];
-    for (let i = 0; i < kanbans; i++) {
-      let k = kanbans[i];
-      result[k.category].push(k);
+    let kanbans = await getAllKanbans();
+    if (kanbans != null) {
+      const result = [[], [], []];
+      for (let i = 0; i < kanbans.length; i++) {
+        let k = kanbans[i];
+        result[k.category].push(k);
+      }
+      console.log(result)
+      return result;
+    } else {
+      console.log()
+      return null
     }
-
-    console.log(result)
-    return result;
   }
 
-  const updateKanban = () => {
-    kanbans.value = getCategorizedKanbans();
+  const updateKanban = async (k) => {
+    console.log(k)
+    const { data } = await useFetch(url + "/" + String(k.id), {
+      method: "PATCH",
+      body: k
+    })
+    console.log(data)
   }
 
   const deleteKanban = async (k) => {
-    await useFetch(url + String(k.id), { method: "delete" });
-    kanbans.value = getCategorizedKanbans();
+    await useFetch(url + "/" + String(k.id), { method: "delete" });
+    const idx = kanbans.value[k.category].indexOf(k);
+    kanbans.value[k.category].splice(idx, 1)
   }
 
   const moveKanban = async (k, direction) => {
@@ -104,7 +120,7 @@
     }
     kanbans.value[kanban.category].push(kanban)
 
-    kanbans = await getCategorizedKanbans();
+    await updateKanban(kanban)
   }
 
   newKanban.value = {
@@ -113,5 +129,9 @@
     body: '',
     category: 0
   };
-  kanbans.value = await getCategorizedKanbans();
+
+  // 読み込みの最後に実行
+  setTimeout(async () => {
+    kanbans.value = await getCategorizedKanbans();
+  }, 100);
 </script>

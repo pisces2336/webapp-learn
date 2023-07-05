@@ -29,6 +29,7 @@ services:
   api:
     build: ./api
     container_name: api
+    restart: on-failure
     ports:
       - "8080:8080"
     env_file:
@@ -38,5 +39,4 @@ services:
     working_dir: /go/src
     depends_on:
       - db
-    # command: /bin/sh -c "go mod tidy && go run main.go"
-    tty: true
+    command: /bin/sh -c "go mod tidy && go run main.go"
