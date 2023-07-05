@@ -4,10 +4,10 @@ Go言語でのバックエンド開発を中心に, Nuxt3を利用したフロ�
 
 https://github.com/pisces2336/webapp-learn/assets/98950347/90109b44-f205-48c0-946e-64c512db4d4b
 
-# 起動方法
+## 起動方法
 - `docker compose up -d`
 
-# 使用技術
+## 使用技術
 - フロントエンド
     - nuxt 3.6.1
     - bootstrap 5.3.0
@@ -21,7 +21,7 @@ https://github.com/pisces2336/webapp-learn/assets/98950347/90109b44-f205-48c0-94
     - Docker, Docker-compose
     - github
 
-# 機能一覧
+## 機能一覧
 - カンバン作成 (タイトル, 本文)
     - 新規作成したカンバンは未着手カテゴリに振り分けられます.
     - Fetch APIを用いてバックエンドと通信し, データベースへ保存を行います.
@@ -32,7 +32,7 @@ https://github.com/pisces2336/webapp-learn/assets/98950347/90109b44-f205-48c0-94
     - 未着手 ⇔ 作業中 ⇔ 完了 の移動を, 各カンバンに表示された矢印ボタンで行えます.
     - Fetch APIを用いてバックエンドと通信し, データベースから該当のカンバンのデータを更新します.
 
-# 工夫, 苦労した点
+## 工夫, 苦労した点
 - docker-composeの利用
     - ローカル環境をなるべく汚すことなく開発を行うことが出来た上, githubからcloneした際の起動方法も簡単にすることが出来ました.
 - bootstrapの導入
