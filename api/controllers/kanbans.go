@@ -33,21 +33,13 @@ func GetAllKanbans(c echo.Context) error {
 
 func UpdateKanban(c echo.Context) error {
 	db := database.DB
-	editedKanban := new(models.Kanban)
-	err := c.Bind(&editedKanban)
-	if err != nil {
-		return err
+	kanban := models.Kanban{}
+	c.Bind(&kanban)
+	result := db.Save(&kanban)
+	if (result.Error != nil) {
+		return result.Error
 	}
-	kanban_id := c.Param("id")
-	if kanban_id != "" {
-		result := db.Model(&models.Kanban{}).Where("ID = ?", kanban_id).Update(editedKanban)
-		if (result.Error != nil) {
-			return result.Error
-		}
-		return c.JSON(http.StatusOK, editedKanban)
-	} else {
-		return c.JSON(http.StatusNotFound, nil)
-	}
+	return c.JSON(http.StatusOK, kanban)
 }
 
 func DeleteKanban(c echo.Context) error {

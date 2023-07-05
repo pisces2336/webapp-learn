@@ -70,32 +70,32 @@
 
   const getAllKanbans = async () => {
     const { data } = await useFetch(url);
+    console.log("getAllKanbans:", data)
     return data.value;
   }
 
   const getCategorizedKanbans = async () => {
     let kanbans = await getAllKanbans();
+    const result = [[], [], []];
     if (kanbans != null) {
-      const result = [[], [], []];
       for (let i = 0; i < kanbans.length; i++) {
         let k = kanbans[i];
         result[k.category].push(k);
       }
-      console.log(result)
-      return result;
-    } else {
-      console.log()
-      return null
     }
+    console.log("getCategorizedKanbans:", result)
+    return result;
   }
 
   const updateKanban = async (k) => {
-    console.log(k)
     const { data } = await useFetch(url + "/" + String(k.id), {
       method: "PATCH",
       body: k
     })
-    console.log(data)
+    console.log("updateKanban:", data)
+    console.log("updatekanban -> getAllKanbans",
+      await getAllKanbans()
+    );
   }
 
   const deleteKanban = async (k) => {
@@ -114,9 +114,9 @@
 
     // カテゴリ移動
     if (direction == 'left') {
-      kanban.category--
+      kanban.category--;
     } else {
-      kanban.category++
+      kanban.category++;
     }
     kanbans.value[kanban.category].push(kanban)
 
