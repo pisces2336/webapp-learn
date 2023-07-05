@@ -2,6 +2,8 @@
 カンバン方式のタスク管理webアプリケーションです.
 Go言語でのバックエンド開発を中心に, Nuxt3を利用したフロントエンド制作とともに学習しました。
 
+https://github.com/pisces2336/webapp-learn/assets/98950347/90109b44-f205-48c0-946e-64c512db4d4b
+
 # 起動方法
 - `docker compose up -d`
 
