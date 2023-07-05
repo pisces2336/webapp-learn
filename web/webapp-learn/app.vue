@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-4">
+      <div class="col-4 pt-3">
         <input v-model="newKanban.title" placeholder="title" class="form-control">
         <input v-model="newKanban.body" placeholder="body" class="form-control">
         <button @click="createKanban()" class="btn btn-success">カンバン作成</button>
