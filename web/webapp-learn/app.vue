@@ -50,11 +50,12 @@
       return
     }
 
+    console.log(k)
+
     const { data } = await useFetch(url, {
       method: "POST",
       body: k
     })
-    console.log(data.value)
 
     kanbans.value[0].push(newKanban.value);
     console.log(kanbans.value)
@@ -88,8 +89,13 @@
     }
   }
 
-  const updateKanban = () => {
-    kanbans.value = getCategorizedKanbans();
+  const updateKanban = async (k) => {
+    console.log(k)
+    const { data } = await useFetch(url + "/" + String(k.id), {
+      method: "PATCH",
+      body: k
+    })
+    console.log(data)
   }
 
   const deleteKanban = async (k) => {
@@ -113,6 +119,8 @@
       kanban.category++
     }
     kanbans.value[kanban.category].push(kanban)
+
+    await updateKanban(kanban)
   }
 
   newKanban.value = {
