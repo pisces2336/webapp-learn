@@ -49,12 +49,12 @@
       return
     }
 
-    await useFetch(url, {
+    const { data } = await useFetch(url, {
       method: "POST",
       body: newKanban.value
     })
 
-    kanbans.value[0].push(newKanban.value);
+    kanbans.value[0].push(data.value);
     newKanban.value = {
       id: 0,
       title: '',
