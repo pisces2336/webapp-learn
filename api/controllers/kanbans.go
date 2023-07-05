@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fmt"
+	"log"
 	"main/database"
 	"main/models"
 	"net/http"
@@ -11,44 +11,65 @@ import (
 
 func CreateKanban(c echo.Context) error {
 	db := database.DB
-	kanban := new(models.Kanban)
+
+	kanban := models.Kanban{}
 	err := c.Bind(&kanban)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	db.Create(&kanban)
-	fmt.Println("created!")
+
+	result := db.Create(&kanban)
+	if result.Error != nil {
+		log.Fatal(result.Error)
+	}
+
 	return c.JSON(http.StatusOK, kanban)
 }
 
 func GetAllKanbans(c echo.Context) error {
 	db := database.DB
-	kanbans := new([]models.Kanban)
+
+	kanbans := []models.Kanban{}
+
 	result := db.Find(&kanbans)
 	if result.RecordNotFound() {
-		fmt.Println("Record not found.")
+		return c.JSON(http.StatusNotFound, kanbans)
+	} else if result.Error != nil {
+		log.Fatal(result.Error)
 	}
+
 	return c.JSON(http.StatusOK, kanbans)
 }
 
 func UpdateKanban(c echo.Context) error {
 	db := database.DB
+
 	kanban := models.Kanban{}
-	c.Bind(&kanban)
-	result := db.Save(&kanban)
-	if (result.Error != nil) {
-		return result.Error
+	err := c.Bind(&kanban)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	result := db.Save(&kanban)
+	if result.Error != nil {
+		log.Fatal(result.Error)
+	}
+
 	return c.JSON(http.StatusOK, kanban)
 }
 
 func DeleteKanban(c echo.Context) error {
 	db := database.DB
-	kanban_id := c.Param("id")
-	if kanban_id != "" {
-		db.Delete(&models.Kanban{}, kanban_id)
-		return c.JSON(http.StatusOK, nil)
-	} else {
-		return c.JSON(http.StatusNotFound, nil)
+
+	kanban := models.Kanban{}
+	result := db.Where("id = ?", c.Param("id")).First(&kanban)
+	if result.RecordNotFound() {
+		return c.JSON(http.StatusNotFound, kanban)
+	} else if result.Error != nil {
+		log.Fatal(result.Error)
 	}
+
+	db.Delete(&kanban)
+
+	return c.JSON(http.StatusOK, kanban)
 }

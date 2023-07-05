@@ -6,7 +6,3 @@ type Kanban struct {
 	Body     string `json:"body"`
 	Category int    `json:"category"`
 }
-
-type kanbansResponse struct {
-	Kanbans []Kanban `json:"kanbans"`
-}

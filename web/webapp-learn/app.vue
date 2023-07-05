@@ -45,21 +45,16 @@
   const newKanban = ref();
 
   const createKanban = async () => {
-    const k = newKanban.value
-    if (k.title == '' || k.body =='') {
+    if (newKanban.value.title == '' || newKanban.value.body =='') {
       return
     }
 
-    console.log(k)
-
-    const { data } = await useFetch(url, {
+    await useFetch(url, {
       method: "POST",
-      body: k
+      body: newKanban.value
     })
 
     kanbans.value[0].push(newKanban.value);
-    console.log(kanbans.value)
-
     newKanban.value = {
       id: 0,
       title: '',
@@ -70,7 +65,6 @@
 
   const getAllKanbans = async () => {
     const { data } = await useFetch(url);
-    console.log("getAllKanbans:", data)
     return data.value;
   }
 
@@ -79,23 +73,17 @@
     const result = [[], [], []];
     if (kanbans != null) {
       for (let i = 0; i < kanbans.length; i++) {
-        let k = kanbans[i];
-        result[k.category].push(k);
+        result[kanbans[i].category].push(kanbans[i]);
       }
     }
-    console.log("getCategorizedKanbans:", result)
     return result;
   }
 
   const updateKanban = async (k) => {
-    const { data } = await useFetch(url + "/" + String(k.id), {
+    await useFetch(url + "/" + String(k.id), {
       method: "PATCH",
       body: k
     })
-    console.log("updateKanban:", data)
-    console.log("updatekanban -> getAllKanbans",
-      await getAllKanbans()
-    );
   }
 
   const deleteKanban = async (k) => {
