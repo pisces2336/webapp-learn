@@ -6,6 +6,7 @@ https://github.com/pisces2336/webapp-learn/assets/98950347/90109b44-f205-48c0-94
 
 ## 起動方法
 - `docker compose up -d`
+- 数分ほどでサーバーが立ち上がるので, `localhost:3000/kanbans`にアクセスしてください.
 
 ## 使用技術
 - フロントエンド
