@@ -4,6 +4,7 @@ import (
 	"os"
 	"time"
 
+	"main/models"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
@@ -12,6 +13,8 @@ var DB *gorm.DB
 
 func Init() {
 	sqlConnect()
+
+	DB.AutoMigrate(&models.Kanban{})
 }
 
 func sqlConnect() {
