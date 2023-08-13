@@ -5,8 +5,25 @@ Go言語でのバックエンド開発を中心に, Nuxt3を利用したフロ�
 https://github.com/pisces2336/webapp-learn/assets/98950347/90109b44-f205-48c0-946e-64c512db4d4b
 
 ## 起動方法
-- `docker compose up -d`
-- 数分ほどでサーバーが立ち上がるので, `localhost:3000/kanbans`にアクセスしてください.
+- `docker compose up`をターミナル上で実行してください.
+- 数分待ち, ターミナルに下のように表示が出たことを確認した後, `localhost:3000/kanbans`にアクセスしてください.
+    - なお, データベースの立ち上がりまではapiやwebのコンテナでエラーを吐き続けますが問題ありません.
+```
+Nuxi 3.6.1
+wNuxt 3.6.1 with Nitro 2.5.2
+
+  > Local:    http://localhost:3000/
+  > Network:  http://172.21.0.4:3000/
+
+
+✔ Nuxt Devtools is enabled v0.6.4 (experimental)
+
+ WARN  Slow module @nuxt/devtools took 21021.9ms to setup.
+
+
+ℹ Vite client warmed up in 4989ms
+[nitro] ✔ Nitro built in 2980 ms
+```
 
 ## 使用技術
 - フロントエンド
